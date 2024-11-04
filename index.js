@@ -10,40 +10,39 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Route de test simple
+// Route de test
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running' });
 });
 
+// Route principale
 app.post('/generate-story', async (req, res) => {
   try {
-    console.log('Received request for intensity:', req.body.intensity);
-    
+    const intensity = req.body.intensity || '5';
+    console.log('Generating story for intensity:', intensity);
+
+    // Pour tester, on renvoie une histoire fixe
+    return res.json({
+      title: "Test Story",
+      story: "Ceci est une histoire test de niveau " + intensity,
+      forbiddenWord: "test"
+    });
+
+    /* On commentera le code OpenAI pour l'instant
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{
         role: "system",
-        content: `Génère une histoire courte initiale pour un jeu de narration. 
-                  Niveau d'intensité: ${req.body.intensity}/10. 
-                  Format requis: 
-                  - Un titre court
-                  - Une histoire de 2-3 phrases
-                  - Un mot interdit lié à l'histoire
-                  L'intensité 1 est légère et amusante, 10 est profonde et psychologique.`
-      }],
-      temperature: 0.8
+        content: `Génère une histoire courte...`
+      }]
     });
-
-    console.log('OpenAI response:', completion.choices[0]);
-
-    res.json({
-      title: "Test Title",
-      story: "Test Story",
-      forbiddenWord: "test"
-    });
+    */
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Erreur de génération', details: error.message });
+    res.status(500).json({ 
+      error: 'Erreur de génération',
+      details: error.message 
+    });
   }
 });
 
