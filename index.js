@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { OpenAI } = require('openai');
-require('dotenv').config();
 
 const app = express();
 app.use(cors());
@@ -11,16 +10,21 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+// Route de test simple
+app.get('/', (req, res) => {
+  res.json({ message: 'Server is running' });
+});
+
 app.post('/generate-story', async (req, res) => {
   try {
-    const { intensity } = req.body;
+    console.log('Received request for intensity:', req.body.intensity);
     
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{
         role: "system",
         content: `Génère une histoire courte initiale pour un jeu de narration. 
-                  Niveau d'intensité: ${intensity}/10. 
+                  Niveau d'intensité: ${req.body.intensity}/10. 
                   Format requis: 
                   - Un titre court
                   - Une histoire de 2-3 phrases
@@ -30,18 +34,16 @@ app.post('/generate-story', async (req, res) => {
       temperature: 0.8
     });
 
-    const story = completion.choices[0].message.content;
-    
-    // Parse the response
-    const [title, content, forbiddenWord] = story.split('\n').filter(line => line.trim());
+    console.log('OpenAI response:', completion.choices[0]);
 
     res.json({
-      title: title,
-      story: content,
-      forbiddenWord: forbiddenWord
+      title: "Test Title",
+      story: "Test Story",
+      forbiddenWord: "test"
     });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur de génération' });
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Erreur de génération', details: error.message });
   }
 });
 
