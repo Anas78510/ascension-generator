@@ -10,33 +10,38 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-// Route de test
-app.get('/', (req, res) => {
-  res.json({ message: 'Server is running' });
-});
-
-// Route principale
 app.post('/generate-story', async (req, res) => {
   try {
     const intensity = req.body.intensity || '5';
     console.log('Generating story for intensity:', intensity);
 
-    // Pour tester, on renvoie une histoire fixe
-    return res.json({
-      title: "Test Story",
-      story: "Ceci est une histoire test de niveau " + intensity,
-      forbiddenWord: "test"
-    });
-
-    /* On commentera le code OpenAI pour l'instant
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{
         role: "system",
-        content: `Génère une histoire courte...`
-      }]
+        content: `Tu es un générateur d'histoires pour un jeu de rôle narratif.
+                  Génère une histoire courte avec les éléments suivants, séparés par des retours à la ligne :
+                  - Un titre court et accrocheur
+                  - Une histoire de 2-3 phrases maximum
+                  - Un mot unique qui sera interdit aux joueurs pendant leur narration
+
+                  L'intensité est de ${intensity}/10 où :
+                  1 = histoire légère et amusante
+                  5 = histoire avec un peu de tension
+                  10 = histoire profonde et psychologique`
+      }],
+      temperature: 0.8
     });
-    */
+
+    const response = completion.choices[0].message.content;
+    const [title, story, word] = response.split('\n').filter(line => line.trim());
+
+    res.json({
+      title: title.replace('- ', ''),
+      story: story.replace('- ', ''),
+      forbiddenWord: word.replace('- ', '')
+    });
+
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ 
@@ -44,6 +49,10 @@ app.post('/generate-story', async (req, res) => {
       details: error.message 
     });
   }
+});
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Server is running' });
 });
 
 const PORT = process.env.PORT || 3000;
