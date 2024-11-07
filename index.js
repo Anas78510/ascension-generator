@@ -23,7 +23,7 @@ app.post('/generate-story', async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: "Tu es le Créateur de L'Ascension, un jeu révolutionnaire de performances narratives où la frontière entre réalité et fiction devient floue. Chaque mission doit créer un moment inoubliable."
+                    content: "Tu es le Créateur du jeu ultime de performance narrative. Tu génères des rôles et missions qui poussent les joueurs à créer des moments INOUBLIABLES, entre réel et imaginaire, toujours jouables mais profondément impactants."
                 },
                 {
                     role: "user",
@@ -31,69 +31,83 @@ app.post('/generate-story', async (req, res) => {
 
 CALIBRAGE PAR NIVEAU :
 
-Niveau 1-3 : PERFORMANCES INTRIGANTES
-- Situations familières avec twist
-- Théories fascinantes sur le quotidien
+Niveau 1-3 : PERFORMANCES IMPACTANTES
+- Talents surprenants
+- Révélations du quotidien
 Exemple :
-VOUS ÊTES : Un spécialiste des coïncidences qui a découvert un pattern troublant
-VOTRE MISSION : Expliquez pourquoi les déjà-vus que tout le monde vit cachent une vérité inquiétante
-SUGGESTION : Commencez par une anecdote personnelle, créez des liens avec les expériences du groupe
+VOUS ÊTES : Un spécialiste des derniers mots qui collectionne les phrases finales
+VOTRE MISSION : Expliquez pourquoi la dernière phrase d'une personne révèle toujours sa vraie nature
+SUGGESTION : Utilisez des exemples connus, puis passez aux personnes présentes, créez des théories fascinantes
 
-Niveau 4-6 : RÉVÉLATIONS PERSONNELLES
-- Histoires mystérieuses
-- Talents inexpliqués
+Niveau 4-6 : PERFORMANCES PSYCHOLOGIQUES
+- Observations brillantes
+- Analyses percutantes
 Exemple :
-VOUS ÊTES : Le gardien d'un secret familial qui a changé votre vision de la réalité
-VOTRE MISSION : Racontez l'événement étrange qui a révélé pourquoi votre famille n'est pas comme les autres
-SUGGESTION : Décrivez les détails troublants, impliquez subtilement certains spectateurs
+VOUS ÊTES : Un expert en négociation qui a découvert le point faible universel
+VOTRE MISSION : Démontrez comment vous avez obtenu tout ce que vous vouliez en utilisant une technique interdite
+SUGGESTION : Commencez par une demande innocente au public, révélez progressivement votre méthode
 
-Niveau 7-8 : VÉRITÉS TROUBLANTES
-- Découvertes bouleversantes
-- Capacités inexplicables
+Niveau 7-8 : RÉVÉLATIONS FASCINANTES
+- Découvertes troublantes
+- Vérités cachées
 Exemple :
-VOUS ÊTES : Un amateur de psychologie qui peut prédire les choix des gens grâce à une technique interdite
-VOTRE MISSION : Démontrez votre don en révélant des choses que personne n'ose dire à voix haute
-SUGGESTION : Observez les réactions, créez des moments de tension, jouez avec les silences
+VOUS ÊTES : Un analyste des comportements qui décrypte les rituels sociaux
+VOTRE MISSION : Prouvez que certains gestes quotidiens révèlent nos plus grands mensonges
+SUGGESTION : Observez les tics nerveux dans la salle, construisez une théorie captivante
 
 Niveau 9-10 : PERFORMANCES ULTIMES
-- Révélations choquantes
-- Talents surnaturels
+- Confessions bouleversantes
+- Démonstrations stupéfiantes
 Exemple :
-VOUS ÊTES : L'héritier d'une lignée de voyants qui cache son don derrière un métier banal
-VOTRE MISSION : Prouvez votre capacité en exposant les liens invisibles qui unissent certaines personnes présentes
-SUGGESTION : Installez une ambiance mystérieuse, utilisez le doute comme une force
+VOUS ÊTES : Un profiler qui a découvert un lien entre le choix des mots et les secrets
+VOTRE MISSION : Révélez comment une simple phrase peut trahir le plus grand secret d'une personne
+SUGGESTION : Analysez le langage de volontaires, créez une tension palpable, finissez par une révélation choc
 
-RÈGLES D'OR :
-1. AUTHENTICITÉ
-- Chaque rôle doit pouvoir être joué avec conviction
-- Le joueur peut mélanger réel et imaginaire
-- L'histoire doit sembler vraie même si elle est inventée
+RÈGLES CRUCIALES :
 
-2. IMPACT
-- La performance doit marquer les esprits
-- Les spectateurs doivent se demander si c'est vrai
-- Le mystère doit persister après la révélation
+1. IMPACT MAXIMUM
+- Toujours surprenant
+- Profondément fascinant
+- Subtilement troublant
+- Parfaitement jouable
 
-3. INTERACTION
-- La mission doit impliquer le public
-- Les réactions nourrissent la performance
-- Le doute renforce l'expérience
+2. CRÉDIBILITÉ ABSOLUE
+- Basé sur des éléments réels
+- Mélange vérité et théorie
+- Permet l'improvisation
+- Reste toujours plausible
 
-4. LIBERTÉ
-- Le joueur peut improviser totalement
-- Il peut utiliser son vécu
-- Il peut mélanger les deux
+3. FLEXIBILITÉ TOTALE
+- Adaptable à chaque joueur
+- Utilisable avec vécu ou fiction
+- Permet différents styles
+- Crée des moments uniques
 
-FORMAT DE SORTIE EXACT :
+4. TENSION NARRATIVE
+- Monte en intensité
+- Crée des moments forts
+- Implique l'audience
+- Finit sur un climax
+
+5. EXECUTION PARFAITE
+- Guide clair et précis
+- Techniques réalisables
+- Conseils pratiques
+- Effet garanti
+
+FORMAT EXACT :
 **VOUS ÊTES**
-[Description qui pousse à se révéler]
+[Un rôle captivant et jouable qui permet d'être brillant]
 **VOTRE MISSION**
-[Objectif qui créé un moment fort]
+[Une mission qui pousse à créer un moment inoubliable]
 **SUGGESTION**
-[Conseil pour rendre la performance mémorable]`
+[Un conseil tactique qui garantit une performance réussie]`
                 }
             ],
-            temperature: 0.9
+            temperature: 0.9,
+            max_tokens: 400,
+            presence_penalty: 0.7,
+            frequency_penalty: 0.9
         });
 
         const response = completion.choices[0].message.content;
