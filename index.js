@@ -1,4 +1,3 @@
-// index.js - Version ULTIME
 const express = require('express');
 const cors = require('cors');
 const { OpenAI } = require('openai');
@@ -24,7 +23,7 @@ app.post('/generate-story', async (req, res) => {
            messages: [
                {
                    role: "system",
-                   content: "Tu es le Créateur de L'Ascension. Tu génères des rôles et des missions qui poussent les joueurs à se révéler et à briller. Réponds UNIQUEMENT avec deux lignes selon le format demandé."
+                   content: "Tu es le Créateur de L'Ascension, un jeu de narration psychologique qui pousse les joueurs à se dépasser et à créer des moments inoubliables. Réponds UNIQUEMENT avec un rôle et une mission selon le format demandé."
                },
                {
                    role: "user",
@@ -32,55 +31,55 @@ app.post('/generate-story', async (req, res) => {
 
 CALIBRAGE PAR NIVEAU :
 
-Niveau 1-3 : PROFILS ACCESSIBLES
-- Situations quotidiennes avec twist
-- Missions qui mettent en confiance
+Niveau 1-3 : IMAGINATION & CHARISME
+- Rôles percutants et amusants
+- Missions qui poussent à captiver son audience
 Exemple :
-VOUS ÊTES : Un observateur du comportement humain qui a développé une théorie fascinante
-VOTRE MISSION : Expliquer pourquoi les habitudes des gens présents confirment votre découverte révolutionnaire
+VOUS ÊTES : Un expert en psychologie qui a découvert que le rire cache des secrets inavoués
+VOTRE MISSION : Démontrer comment la façon de rire de chacun révèle sa véritable personnalité
 
-Niveau 4-6 : PROFILS INTRIGANTS
-- Situations personnelles fortes
-- Missions qui poussent à se dévoiler
+Niveau 4-6 : MYSTÈRE & TENSION
+- Rôles intrigants et mystérieux
+- Missions qui créent du suspense
 Exemple :
-VOUS ÊTES : Le confident involontaire de secrets troublants
-VOTRE MISSION : Révéler comment vous avez découvert un fil conducteur entre les confidences reçues
+VOUS ÊTES : Un maître dans l'art de déchiffrer les non-dits
+VOTRE MISSION : Révéler les véritables intentions qui se cachent derrière les gestes anodins du groupe
 
-Niveau 7-8 : PROFILS MYSTÉRIEUX
-- Situations intenses
-- Missions qui créent de la tension
+Niveau 7-8 : MANIPULATION & POUVOIR
+- Rôles qui donnent du pouvoir
+- Missions qui testent les limites
 Exemple :
-VOUS ÊTES : Un maître manipulateur qui utilise son don pour une cause noble
-VOTRE MISSION : Démontrer comment vous pouvez lire les véritables intentions des gens présents
+VOUS ÊTES : Un expert en manipulation psychologique qui utilise son don à des fins éthiques
+VOTRE MISSION : Prouver votre talent en révélant les secrets que certains pensaient avoir bien cachés
 
-Niveau 9-10 : PROFILS ULTIMES
-- Situations extraordinaires
-- Missions qui bouleversent
+Niveau 9-10 : RÉVÉLATION ULTIME
+- Rôles qui bouleversent
+- Missions qui marquent les esprits
 Exemple :
-VOUS ÊTES : Le gardien d'une vérité qui change tout
-VOTRE MISSION : Expliquer pourquoi ce que vous venez de comprendre va transformer la vision que les gens ont d'eux-mêmes
+VOUS ÊTES : Un être capable de lire dans les souvenirs les plus profonds
+VOTRE MISSION : Démontrer comment un événement passé relie secrètement plusieurs personnes présentes
 
 RÈGLES CRUCIALES :
 
 1. LE RÔLE
-- Facile à comprendre
-- Donne envie d'être joué
+- Original mais crédible
+- Donne envie d'impressionner
 - Permet d'être créatif
-- Crée une identité forte
+- Pousse à se dépasser
 
 2. LA MISSION
-- Claire et spécifique
-- Pousse à être convaincant
-- Permet l'improvisation
-- Crée des moments forts
-
-3. FORMAT
-- Langage direct
-- Pas de complexité inutile
+- Implique le groupe
 - Force à être captivant
-- Laisse place à l'imagination
+- Crée de la tension
+- Permet des moments forts
 
-FORMAT DE SORTIE EXACT :
+3. PRINCIPES
+- Pas de clichés
+- Profondeur psychologique
+- Engagement émotionnel
+- Impact social fort
+
+FORMAT EXACT :
 VOUS ÊTES : [Le rôle en une phrase]
 VOTRE MISSION : [La mission en une phrase]`
                }
