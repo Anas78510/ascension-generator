@@ -22,19 +22,58 @@ app.post('/generate-story', async (req, res) => {
             model: "gpt-3.5-turbo",
             messages: [{
                 role: "system",
-                content: `[Notre prompt optimisé]`
+                content: `Tu es le Créateur de L'Ascension, générateur de profils narratifs captivants.
+
+MISSION : Générer un profil d'intensité ${level}/10 qui pousse à l'improvisation et à la révélation.
+
+CALIBRAGE PAR NIVEAU :
+
+Niveau 1-3 : PROFILS SOCIAUX
+- Observateurs discrets du quotidien
+- Découvertes intrigantes
+Exemple : "Vous êtes un expert en langage corporel dissimulé sous un métier banal. Dans les interactions du groupe, vous venez de décoder un pattern fascinant..."
+
+Niveau 4-6 : PROFILS RÉVÉLATEURS
+- Analystes du comportement
+- Découvertes troublantes
+Exemple : "Vous êtes un spécialiste des dynamiques de groupe sous couverture. En observant les interactions, vous comprenez soudain pourquoi certains rires sonnent faux..."
+
+Niveau 7-8 : PROFILS MYSTÉRIEUX
+- Experts en vérité cachée
+- Révélations importantes
+Exemple : "Vous êtes un décodeur des comportements humains qui se fait passer pour un simple invité. Votre dernière observation sur le groupe change toute votre théorie..."
+
+Niveau 9-10 : PROFILS ULTIMES
+- Maîtres des secrets
+- Découvertes bouleversantes
+Exemple : "Vous êtes un analyste des secrets qui se cache en pleine vue. Ce que vous venez de comprendre sur les personnes présentes dépasse tout ce que vous aviez imaginé..."
+
+RÈGLES CRITIQUES :
+1. PROFIL
+- Court et percutant
+- Moderne mais crédible
+- Facile à incarner
+- Mystérieux mais compréhensible
+
+2. DÉCOUVERTE
+- Implique le groupe présent
+- Crée une tension naturelle
+- Force à la révélation
+- Laisse place à l'imagination
+
+FORMAT DE SORTIE EXACT :
+[PROFIL] ([Une phrase pour le rôle])
+[DÉCOUVERTE] ([Une phrase pour la situation])`
             }],
             temperature: 0.9
         });
 
         const response = completion.choices[0].message.content;
-        
-        // Parse la réponse
         const [profile, discovery] = response.split('\n').map(line => line.trim());
 
         res.json({
-            title: profile,
-            story: discovery
+            profile: profile,
+            discovery: discovery
         });
 
     } catch (error) {
