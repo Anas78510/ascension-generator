@@ -8,115 +8,117 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-   apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 app.post('/generate-story', async (req, res) => {
-   try {
-       const { intensity } = req.body;
-       const level = intensity || '5';
-       
-       console.log('Generating story for intensity:', level);
+    try {
+        const { intensity } = req.body;
+        const level = intensity || '5';
+        
+        console.log('Generating story for intensity:', level);
 
-       const completion = await openai.chat.completions.create({
-           model: "gpt-3.5-turbo",
-           messages: [
-               {
-                   role: "system",
-                   content: "Tu es le Créateur de L'Ascension, un jeu de narration psychologique qui pousse les joueurs à se dépasser et à créer des moments inoubliables. Réponds UNIQUEMENT avec un rôle et une mission selon le format demandé."
-               },
-               {
-                   role: "user",
-                   content: `Génère un rôle et une mission d'intensité ${level}/10.
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "system",
+                    content: "Tu es le Créateur de L'Ascension, un jeu révolutionnaire de performances narratives où la frontière entre réalité et fiction devient floue. Chaque mission doit créer un moment inoubliable."
+                },
+                {
+                    role: "user",
+                    content: `Génère un profil d'intensité ${level}/10.
 
 CALIBRAGE PAR NIVEAU :
 
-Niveau 1-3 : IMAGINATION & CHARISME
-- Rôles percutants et amusants
-- Missions qui poussent à captiver son audience
+Niveau 1-3 : PERFORMANCES INTRIGANTES
+- Situations familières avec twist
+- Théories fascinantes sur le quotidien
 Exemple :
-VOUS ÊTES : Un expert en psychologie qui a découvert que le rire cache des secrets inavoués
-VOTRE MISSION : Démontrer comment la façon de rire de chacun révèle sa véritable personnalité
+VOUS ÊTES : Un spécialiste des coïncidences qui a découvert un pattern troublant
+VOTRE MISSION : Expliquez pourquoi les déjà-vus que tout le monde vit cachent une vérité inquiétante
+SUGGESTION : Commencez par une anecdote personnelle, créez des liens avec les expériences du groupe
 
-Niveau 4-6 : MYSTÈRE & TENSION
-- Rôles intrigants et mystérieux
-- Missions qui créent du suspense
+Niveau 4-6 : RÉVÉLATIONS PERSONNELLES
+- Histoires mystérieuses
+- Talents inexpliqués
 Exemple :
-VOUS ÊTES : Un maître dans l'art de déchiffrer les non-dits
-VOTRE MISSION : Révéler les véritables intentions qui se cachent derrière les gestes anodins du groupe
+VOUS ÊTES : Le gardien d'un secret familial qui a changé votre vision de la réalité
+VOTRE MISSION : Racontez l'événement étrange qui a révélé pourquoi votre famille n'est pas comme les autres
+SUGGESTION : Décrivez les détails troublants, impliquez subtilement certains spectateurs
 
-Niveau 7-8 : MANIPULATION & POUVOIR
-- Rôles qui donnent du pouvoir
-- Missions qui testent les limites
+Niveau 7-8 : VÉRITÉS TROUBLANTES
+- Découvertes bouleversantes
+- Capacités inexplicables
 Exemple :
-VOUS ÊTES : Un expert en manipulation psychologique qui utilise son don à des fins éthiques
-VOTRE MISSION : Prouver votre talent en révélant les secrets que certains pensaient avoir bien cachés
+VOUS ÊTES : Un amateur de psychologie qui peut prédire les choix des gens grâce à une technique interdite
+VOTRE MISSION : Démontrez votre don en révélant des choses que personne n'ose dire à voix haute
+SUGGESTION : Observez les réactions, créez des moments de tension, jouez avec les silences
 
-Niveau 9-10 : RÉVÉLATION ULTIME
-- Rôles qui bouleversent
-- Missions qui marquent les esprits
+Niveau 9-10 : PERFORMANCES ULTIMES
+- Révélations choquantes
+- Talents surnaturels
 Exemple :
-VOUS ÊTES : Un être capable de lire dans les souvenirs les plus profonds
-VOTRE MISSION : Démontrer comment un événement passé relie secrètement plusieurs personnes présentes
+VOUS ÊTES : L'héritier d'une lignée de voyants qui cache son don derrière un métier banal
+VOTRE MISSION : Prouvez votre capacité en exposant les liens invisibles qui unissent certaines personnes présentes
+SUGGESTION : Installez une ambiance mystérieuse, utilisez le doute comme une force
 
-RÈGLES CRUCIALES :
+RÈGLES D'OR :
+1. AUTHENTICITÉ
+- Chaque rôle doit pouvoir être joué avec conviction
+- Le joueur peut mélanger réel et imaginaire
+- L'histoire doit sembler vraie même si elle est inventée
 
-1. LE RÔLE
-- Original mais crédible
-- Donne envie d'impressionner
-- Permet d'être créatif
-- Pousse à se dépasser
+2. IMPACT
+- La performance doit marquer les esprits
+- Les spectateurs doivent se demander si c'est vrai
+- Le mystère doit persister après la révélation
 
-2. LA MISSION
-- Implique le groupe
-- Force à être captivant
-- Crée de la tension
-- Permet des moments forts
+3. INTERACTION
+- La mission doit impliquer le public
+- Les réactions nourrissent la performance
+- Le doute renforce l'expérience
 
-3. PRINCIPES
-- Pas de clichés
-- Profondeur psychologique
-- Engagement émotionnel
-- Impact social fort
+4. LIBERTÉ
+- Le joueur peut improviser totalement
+- Il peut utiliser son vécu
+- Il peut mélanger les deux
 
-FORMAT EXACT :
-VOUS ÊTES : [Le rôle en une phrase]
-VOTRE MISSION : [La mission en une phrase]`
-               }
-           ],
-           temperature: 0.9
-       });
+FORMAT DE SORTIE EXACT :
+**VOUS ÊTES**
+[Description qui pousse à se révéler]
+**VOTRE MISSION**
+[Objectif qui créé un moment fort]
+**SUGGESTION**
+[Conseil pour rendre la performance mémorable]`
+                }
+            ],
+            temperature: 0.9
+        });
 
-       const response = completion.choices[0].message.content;
-       const [role, mission] = response.split('\n').map(line => {
-           if (line.startsWith('VOUS ÊTES : ')) {
-               return line.replace('VOUS ÊTES : ', '');
-           }
-           if (line.startsWith('VOTRE MISSION : ')) {
-               return line.replace('VOTRE MISSION : ', '');
-           }
-           return line;
-       });
+        const response = completion.choices[0].message.content;
+        
+        // Parse le format avec **
+        const role = response.split('**VOUS ÊTES**')[1].split('**VOTRE MISSION**')[0].trim();
+        const mission = response.split('**VOTRE MISSION**')[1].split('**SUGGESTION**')[0].trim();
+        const suggestion = response.split('**SUGGESTION**')[1].trim();
 
-       res.json({
-           role: role.trim(),
-           mission: mission.trim()
-       });
+        res.json({
+            role: role,
+            mission: mission,
+            suggestion: suggestion
+        });
 
-   } catch (error) {
-       console.error('Error:', error);
-       res.status(500).json({
-           error: 'Erreur de génération',
-           details: error.message
-       });
-   }
-});
-
-app.get('/', (req, res) => {
-   res.json({ message: 'Server is running' });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({
+            error: 'Erreur de génération',
+            details: error.message
+        });
+    }
 });
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-   console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
