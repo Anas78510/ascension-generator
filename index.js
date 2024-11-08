@@ -23,7 +23,7 @@ app.post('/generate-story', async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: "Tu es le Créateur du jeu ultime de performance narrative. Tu génères des rôles et missions qui poussent les joueurs à créer des moments INOUBLIABLES, entre réel et imaginaire, toujours jouables mais profondément impactants."
+                    content: "Tu es le Maître du Jeu de L'Ascension. Tu crées des rôles et des missions parfaitement calibrés pour que chaque joueur puisse briller devant son public, quel que soit son niveau d'aisance. Chaque performance doit être naturelle, fun et captivante."
                 },
                 {
                     role: "user",
@@ -31,77 +31,90 @@ app.post('/generate-story', async (req, res) => {
 
 CALIBRAGE PAR NIVEAU :
 
-Niveau 1-3 : PERFORMANCES IMPACTANTES
-- Talents surprenants
-- Révélations du quotidien
+Niveau 1-2 : PREMIÈRES PERFORMANCES (Ultra accessible, fun garanti)
+- Situations universelles
+- Humour facile
+- Succès assuré
 Exemple :
-VOUS ÊTES : Un spécialiste des derniers mots qui collectionne les phrases finales
-VOTRE MISSION : Expliquez pourquoi la dernière phrase d'une personne révèle toujours sa vraie nature
-SUGGESTION : Utilisez des exemples connus, puis passez aux personnes présentes, créez des théories fascinantes
+VOUS ÊTES : Le spécialiste des excuses bidons qui peut tout justifier
+VOTRE MISSION : Improvisez la meilleure défense possible pour "le chien a mangé mes devoirs" version adulte
+SUGGESTION : Partez d'excuses classiques, ajoutez des détails délirants, faites voter la meilleure excuse du public
 
-Niveau 4-6 : PERFORMANCES PSYCHOLOGIQUES
-- Observations brillantes
-- Analyses percutantes
+Niveau 3-4 : PERFORMANCES SOCIALES (Observation et rire)
+- Situations du quotidien
+- Complicité garantie
+- Moments de reconnaissance
 Exemple :
-VOUS ÊTES : Un expert en négociation qui a découvert le point faible universel
-VOTRE MISSION : Démontrez comment vous avez obtenu tout ce que vous vouliez en utilisant une technique interdite
-SUGGESTION : Commencez par une demande innocente au public, révélez progressivement votre méthode
+VOUS ÊTES : L'expert des situations gênantes qui arrive à en faire des moments de gloire
+VOTRE MISSION : Provoquez un fou rire général en racontant votre pire moment de honte et comment vous l'avez transformé
+SUGGESTION : Choisissez une situation où tout le monde peut se reconnaître, jouez sur les détails, libérez les anecdotes du public
 
-Niveau 7-8 : RÉVÉLATIONS FASCINANTES
-- Découvertes troublantes
-- Vérités cachées
+Niveau 5-6 : PERFORMANCES INTRIGANTES (Plus subtil, toujours fun)
+- Observations malignes
+- Théories amusantes
+- Participation naturelle
 Exemple :
-VOUS ÊTES : Un analyste des comportements qui décrypte les rituels sociaux
-VOTRE MISSION : Prouvez que certains gestes quotidiens révèlent nos plus grands mensonges
-SUGGESTION : Observez les tics nerveux dans la salle, construisez une théorie captivante
+VOUS ÊTES : Le décodeur des habitudes secrètes en soirée
+VOTRE MISSION : Révélez les trois comportements qui trahissent qui va rentrer le premier et qui va rester jusqu'au bout
+SUGGESTION : Observez la salle, créez des catégories drôles, laissez le public deviner qui est qui
 
-Niveau 9-10 : PERFORMANCES ULTIMES
-- Confessions bouleversantes
+Niveau 7-8 : PERFORMANCES CAPTIVANTES (Plus d'impact, toujours accessible)
+- Révélations surprenantes
+- Théories fascinantes
+- Moments forts
+Exemple :
+VOUS ÊTES : Le spécialiste des langages corporels qui lit dans les amitiés
+VOTRE MISSION : Démontrez comment vous pouvez deviner qui sont les vrais amis dans un groupe juste avec leurs attitudes
+SUGGESTION : Utilisez des exemples visibles, créez du suspense, finissez par une révélation qui fait réagir
+
+Niveau 9-10 : PERFORMANCES ULTIMES (Maximum impact, reste jouable)
 - Démonstrations stupéfiantes
+- Moments de vérité
+- Finales mémorables
 Exemple :
-VOUS ÊTES : Un profiler qui a découvert un lien entre le choix des mots et les secrets
-VOTRE MISSION : Révélez comment une simple phrase peut trahir le plus grand secret d'une personne
-SUGGESTION : Analysez le langage de volontaires, créez une tension palpable, finissez par une révélation choc
+VOUS ÊTES : L'expert en persuasion qui peut faire changer n'importe qui d'avis
+VOTRE MISSION : Montrez comment vous pouvez retourner complètement l'opinion d'un volontaire en trois phrases
+SUGGESTION : Choisissez un sujet léger, créez des retournements de situation, terminez sur un moment fort
 
-RÈGLES CRUCIALES :
+RÈGLES D'OR :
 
-1. IMPACT MAXIMUM
-- Toujours surprenant
-- Profondément fascinant
-- Subtilement troublant
-- Parfaitement jouable
+1. JOUABILITÉ MAXIMALE
+- Facile à comprendre
+- Simple à exécuter
+- Impossible à rater
+- Fun à regarder
 
-2. CRÉDIBILITÉ ABSOLUE
-- Basé sur des éléments réels
-- Mélange vérité et théorie
-- Permet l'improvisation
-- Reste toujours plausible
+2. IMPACT GARANTI
+- Crée des réactions
+- Implique le public
+- Génère des rires
+- Reste mémorable
 
 3. FLEXIBILITÉ TOTALE
 - Adaptable à chaque joueur
-- Utilisable avec vécu ou fiction
-- Permet différents styles
-- Crée des moments uniques
+- Marche avec vécu ou fiction
+- Permet l'improvisation
+- S'adapte au groupe
 
-4. TENSION NARRATIVE
+4. DYNAMIQUE DE JEU
 - Monte en intensité
-- Crée des moments forts
-- Implique l'audience
-- Finit sur un climax
+- Crée des moments collectifs
+- Encourage la participation
+- Maintient l'énergie
 
-5. EXECUTION PARFAITE
-- Guide clair et précis
-- Techniques réalisables
-- Conseils pratiques
-- Effet garanti
+5. SUCCÈS ASSURÉ
+- Suggestions concrètes
+- Techniques simples
+- Réactions garanties
+- Fin impactante
 
-FORMAT EXACT :
+FORMAT DE SORTIE EXACT :
 **VOUS ÊTES**
-[Un rôle captivant et jouable qui permet d'être brillant]
+[Un rôle que n'importe qui peut incarner avec style]
 **VOTRE MISSION**
-[Une mission qui pousse à créer un moment inoubliable]
+[Une mission claire qui crée un moment fort et fun]
 **SUGGESTION**
-[Un conseil tactique qui garantit une performance réussie]`
+[Un guide étape par étape pour réussir sa performance]`
                 }
             ],
             temperature: 0.9,
