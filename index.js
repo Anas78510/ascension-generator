@@ -6,6 +6,12 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+// Codes Admin permanents
+const ADMIN_CODES = [
+    'MASTER-ASCENSION-2024',  // Code principal
+    'ADMIN-TEST-2024'         // Code test
+];
+
 // Connexion MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connecté à MongoDB!'))
@@ -13,10 +19,16 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Modèle pour les codes de jeu
 const GameCode = mongoose.model('GameCode', {
-    code: String,           // Code unique dans la boîte
-    isActivated: Boolean,   // Si le code a été utilisé
-    activatedAt: Date,      // Quand
-    dailyUsage: [{         // Suivi utilisation
+    code: String,
+    isActivated: Boolean,
+    deviceId: String,
+    activatedAt: Date,
+    type: {
+        type: String,
+        enum: ['admin', 'standard'],
+        default: 'standard'
+    },
+    dailyUsage: [{
         date: Date,
         count: Number
     }]
@@ -33,64 +45,91 @@ const openai = new OpenAI({
 const validateGameAccess = async (req, res, next) => {
     try {
         const gameCode = req.headers['x-game-code'];
+        const deviceId = req.headers['x-device-id'];
         
-        if (!gameCode) {
-            return res.status(401).json({ error: 'Code requis' });
+        // Vérifie si c'est un code admin
+        if (ADMIN_CODES.includes(gameCode)) {
+            next();
+            return;
         }
 
-        // Vérifie le code
+        // Pour les codes standards
         const game = await GameCode.findOne({ code: gameCode });
         
-        if (!game || !game.isActivated) {
-            return res.status(403).json({ error: 'Code invalide ou non activé' });
+        if (!game) {
+            return res.status(403).json({ error: 'Code invalide' });
         }
 
-        // Vérifie l'utilisation quotidienne
-        const today = new Date().toDateString();
-        const todayUsage = game.dailyUsage.find(
-            u => u.date.toDateString() === today
-        );
-
-        if (todayUsage && todayUsage.count >= 50) {
-            return res.status(429).json({ error: 'Limite quotidienne atteinte' });
+        // Vérifie l'appareil
+        if (game.isActivated && game.deviceId && game.deviceId !== deviceId) {
+            return res.status(403).json({ error: 'Code déjà utilisé sur un autre appareil' });
         }
 
-        // Met à jour le compteur
-        if (!todayUsage) {
-            game.dailyUsage.push({ date: new Date(), count: 1 });
-        } else {
-            todayUsage.count++;
+        // Active le code si premier usage
+        if (!game.isActivated) {
+            game.isActivated = true;
+            game.deviceId = deviceId;
+            game.activatedAt = new Date();
         }
+
+        // Vérifie l'utilisation quotidienne (sauf admin)
+        if (game.type !== 'admin') {
+            const today = new Date().toDateString();
+            const todayUsage = game.dailyUsage.find(
+                u => u.date.toDateString() === today
+            );
+
+            if (todayUsage && todayUsage.count >= 50) {
+                return res.status(429).json({ error: 'Limite quotidienne atteinte' });
+            }
+
+            // Met à jour le compteur
+            if (!todayUsage) {
+                game.dailyUsage.push({ date: new Date(), count: 1 });
+            } else {
+                todayUsage.count++;
+            }
+        }
+
         await game.save();
-
         next();
     } catch (error) {
         res.status(500).json({ error: 'Erreur de validation' });
     }
 };
 
-// Route pour activer un code de jeu
-app.post('/activate-game', async (req, res) => {
-    const { gameCode } = req.body;
+// Route pour générer des codes
+app.post('/admin/generate-codes', async (req, res) => {
+    const { count = 1, prefix = 'ASC' } = req.body;
+    const adminCode = req.headers['x-admin-code'];
+
+    if (!ADMIN_CODES.includes(adminCode)) {
+        return res.status(403).json({ error: 'Accès non autorisé' });
+    }
     
     try {
-        const game = await GameCode.findOne({ code: gameCode });
-        
-        if (!game || game.isActivated) {
-            return res.status(400).json({ error: 'Code invalide ou déjà utilisé' });
+        const codes = [];
+        for (let i = 0; i < count; i++) {
+            const code = `${prefix}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            await GameCode.create({ 
+                code,
+                isActivated: false,
+                type: 'standard'
+            });
+            codes.push(code);
         }
-
-        game.isActivated = true;
-        game.activatedAt = new Date();
-        await game.save();
-
-        res.json({ success: true });
+        
+        res.json({ 
+            message: `${count} codes générés avec succès`,
+            prefix: prefix,
+            codes: codes 
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Erreur d\'activation' });
+        res.status(500).json({ error: 'Erreur de génération des codes' });
     }
 });
 
-// Générateur avec la vérification ajoutée
+// Générateur avec vérification
 app.post('/generate-story', validateGameAccess, async (req, res) => {
     try {
         const { intensity } = req.body;
@@ -103,7 +142,7 @@ app.post('/generate-story', validateGameAccess, async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: "Tu es le Créateur du jeu ultime de performance narrative. Tu génères des rôles et missions qui poussent les joueurs à créer des moments INOUBLIABLES, entre réel et imaginaire, toujours jouables mais profondément impactants."
+                    content: "Tu es le Créateur du jeu ultime de performance narrative. Tu génères des rôles et missions qui poussent les joueurs à créer des moments INOUBLIABLES, entre réel et imaginaire, toujours jouables mais profondément impactants. Chaque mission doit être parfaitement calibrée pour permettre au joueur de briller, qu'il invente ou utilise son vécu."
                 },
                 {
                     role: "user",
@@ -111,75 +150,75 @@ app.post('/generate-story', validateGameAccess, async (req, res) => {
 
 CALIBRAGE PAR NIVEAU :
 
-Niveau 1-3 : PERFORMANCES IMPACTANTES
-- Performance naturelle
-- Talents surprenants
-- Révélations légères
+Niveau 1-3 : PERFORMANCES ACCESSIBLES
+- Talents surprenants mais jouables
+- Théories fascinantes sur le quotidien
+- Observations qui captent l'attention
 Exemple :
-VOUS ÊTES : Un expert en comportements absurdes qui analyse les manies inavouables
-VOTRE MISSION : Prouvez que nos petites hontes quotidiennes révèlent qui on est vraiment
-SUGGESTION : Commencez par avouer un truc gênant, observez les sourires complices, enchaînez les révélations
+VOUS ÊTES : Le roi/la reine des excuses bidon qui peut justifier l'injustifiable
+VOTRE MISSION : Improvisez la meilleure excuse de tous les temps pour un retard/oubli devant le groupe
+SUGGESTION : Commencez petit puis ajoutez des rebondissements de plus en plus délirants, faites participer le public
 
-Niveau 4-6 : PERFORMANCES PSYCHOLOGIQUES
+Niveau 4-6 : RÉVÉLATIONS INTRIGANTES
+- Expériences troublantes
+- Découvertes mystérieuses
+- Talents cachés
+Exemple :
+VOUS ÊTES : Le seul à avoir remarqué ce détail fascinant sur la mémoire des prénoms
+VOTRE MISSION : Expliquez comment vous avez découvert que la façon dont les gens se présentent révèle leur plus grand mensonge
+SUGGESTION : Faites-les se présenter à nouveau, arrêtez-vous sur des détails, créez des théories folles mais crédibles
+
+Niveau 7-8 : PERFORMANCES PSYCHOLOGIQUES
 - Observations brillantes
-- Analyses percutantes
-- Tests sociaux
+- Théories captivantes
+- Expériences fascinantes
 Exemple :
-VOUS ÊTES : Un expert en négociation qui a découvert le point faible universel
-VOTRE MISSION : Démontrez comment vous avez obtenu tout ce que vous vouliez en utilisant une technique interdite
-SUGGESTION : Commencez par une demande innocente au public, révélez progressivement votre méthode
-
-Niveau 7-8 : RÉVÉLATIONS FASCINANTES
-- Découvertes troublantes
-- Vérités cachées
-- Moments forts
-Exemple :
-VOUS ÊTES : Un analyste des comportements qui décrypte les rituels sociaux
-VOTRE MISSION : Prouvez que certains gestes quotidiens révèlent nos plus grands mensonges
-SUGGESTION : Observez les tics nerveux dans la salle, construisez une théorie captivante
+VOUS ÊTES : Un expert en manipulation qui utilise son don pour une cause noble
+VOTRE MISSION : Prouvez que vous pouvez faire avouer n'importe quoi à n'importe qui avec 3 questions
+SUGGESTION : Choisissez votre cible avec soin, posez des questions apparemment banales, créez le moment de vérité
 
 Niveau 9-10 : PERFORMANCES ULTIMES
 - Confessions bouleversantes
-- Démonstrations stupéfiantes
-- Révélations choc
+- Révélations stupéfiantes
+- Moments inoubliables
 Exemple :
-VOUS ÊTES : Un profiler qui a découvert un lien entre le choix des mots et les secrets
-VOTRE MISSION : Révélez comment une simple phrase peut trahir le plus grand secret d'une personne
-SUGGESTION : Analysez le langage de volontaires, créez une tension palpable, finissez par une révélation choc
+VOUS ÊTES : Le témoin d'un phénomène inexplicable qui se répète
+VOTRE MISSION : Montrez comment certaines personnes présentes l'ont aussi vécu sans le savoir
+SUGGESTION : Installez le doute, construisez la tension, finissez par une révélation qui marque les esprits
 
-RÈGLES D'OR :
+RÈGLES CRUCIALES :
 
-1. JOUABILITÉ
-- Situations 100% réalisables
-- Performances accessibles
+1. PERFORMANCE
+- Toujours 100% jouable
+- Mix possible réel/fiction
 - Impact garanti
-- Fun à jouer
+- Permet de briller
 
-2. CRÉDIBILITÉ
-- Basé sur du possible
-- Entre réel et imaginaire
-- Toujours plausible
-- Mystérieux mais crédible
-
-3. IMPACT
+2. IMPACT
 - Crée des moments forts
-- Implique l'audience
-- Pousse aux révélations
+- Captive l'audience
 - Reste mémorable
+- Pousse à l'interaction
 
-4. ÉQUILIBRE
-- Mélange humour et mystère
-- Dose le sérieux
-- Permet l'improvisation
+3. CRÉDIBILITÉ
+- Entre vérité et mystère
+- Théories fascinantes mais plausibles
+- Observations captivantes
+- Révélations possibles
+
+4. LIBERTÉ CRÉATIVE
+- Permet d'inventer
+- Permet d'utiliser son vécu
+- Permet de mélanger les deux
 - S'adapte au joueur
 
 FORMAT DE SORTIE EXACT :
 **VOUS ÊTES**
-[Un rôle captivant et jouable qui permet d'être brillant]
+[Un rôle qui permet d'être brillant tout en restant crédible]
 **VOTRE MISSION**
-[Une mission qui pousse à créer un moment inoubliable]
+[Une mission qui crée un vrai moment fort tout en restant jouable]
 **SUGGESTION**
-[Un conseil tactique qui garantit une performance réussie]`
+[Un conseil tactique précis pour réussir sa performance]`
                 }
             ],
             temperature: 0.9,
@@ -206,24 +245,6 @@ FORMAT DE SORTIE EXACT :
             error: 'Erreur de génération',
             details: error.message
         });
-    }
-});
-
-// Route pour générer des codes de jeu (à protéger!)
-app.post('/admin/generate-codes', async (req, res) => {
-    const { count = 1 } = req.body;
-    
-    try {
-        const codes = [];
-        for (let i = 0; i < count; i++) {
-            const code = 'ASC-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            await GameCode.create({ code });
-            codes.push(code);
-        }
-        
-        res.json({ codes });
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur de génération des codes' });
     }
 });
 
